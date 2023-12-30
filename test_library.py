@@ -28,9 +28,10 @@ def safeunload():
     global printer
     if printer is not None:
         if printer.device is not None:
-            print("state ->", printer.device.is_connected)
+            # print("state ->", printer.device.is_connected)
             if printer.device.is_connected: printer.unload()
     input("!! >> ")
+
 atexit.register(safeunload)
 
 def create_prt_object(scantime : float = 2.0, energy : float = 0.1, quality : int = 4, speedmul : float = 1, image_param : str = ""):
@@ -81,7 +82,7 @@ def print_text(printer : prtlib.PrinterDriver, text_str, font_family = "Ubuntu M
 if __name__ == "__main__":
     # while not (z := int(input("Select program mode\n1. Text\n2.Image\n>> "))) < 3:
     #     print("Enter a valid choice.")
-    z = 1
+    z = 1 if sys.argv[1].strip() != "nautilus-menu" else 3
     match z:
         case 1:
             # le_text = os.popen("neofetch --stdout | fold -w 40 -s").read()
@@ -96,7 +97,7 @@ if __name__ == "__main__":
             prt = create_prt_object(speedmul=3)
             print_image(prt, fpath)
         case 3:
-            fpaths = sys.argv[1:]
+            fpaths = sys.argv[2:]
             print(fpaths)
             prt = create_prt_object()
             for fpath in fpaths:
