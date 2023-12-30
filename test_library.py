@@ -63,14 +63,14 @@ def print_image(printer : prtlib.PrinterDriver, arg_file, unload : bool = False)
         mag_image.close()
         if unload: printer.unload()
 
-def print_text(printer : prtlib.PrinterDriver, text_str, font_family, font_size = 120, unload : bool = False):
+def print_text(printer : prtlib.PrinterDriver, text_str, font_family = "Ubuntu Mono", align_text = "left", font_size = 120, unload : bool = False):
     # if arg_file == '-':
     #     file = sys.stdin.buffer
     # else:
     #     file = open(arg_file, 'rb')
     
     mode = 'pbm'
-    mag_image = new_pbm_generator.create_text_image(text_str, printer.model.paper_width, font_family, font_size) 
+    mag_image = new_pbm_generator.create_text_image(text_str, printer.model.paper_width, font_family, font_size, align_text) 
     try:
         printer.print(mag_image, mode=mode)
     finally:
@@ -81,18 +81,19 @@ def print_text(printer : prtlib.PrinterDriver, text_str, font_family, font_size 
 if __name__ == "__main__":
     # while not (z := int(input("Select program mode\n1. Text\n2.Image\n>> "))) < 3:
     #     print("Enter a valid choice.")
-    z = 3
+    z = 1
     match z:
         case 1:
-            # le_text = os.popen("inxi -d | fold -w 40 -s").read()
-            le_text = "Test string hello"
-            prt = create_prt_object()
-            print_text(prt, le_text, "Comic Sans MS")
+            # le_text = os.popen("neofetch --stdout | fold -w 40 -s").read()
+            le_text = "Centered text test\nWith multiple\nlines\nand things" if sys.stdin.isatty() else sys.stdin.read()
+            print(le_text)
+            prt = create_prt_object(speedmul=3)
+            print_text(prt, le_text, "Impact", align_text="center")
         case 2:
             # fpath = zenity_file_dialog(2)
             fpath = "~/Pictures/nikoaf5.png"
             print(fpath)
-            prt = create_prt_object()
+            prt = create_prt_object(speedmul=3)
             print_image(prt, fpath)
         case 3:
             fpaths = sys.argv[1:]

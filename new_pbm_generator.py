@@ -19,7 +19,7 @@ def has_transparency(img):
     return False
 
 
-def create_text_image(text, max_width, font_family, font_size):
+def create_text_image(text, max_width, font_family, font_size, align_text):
     # Create a blank image with a white background
     temp_img = Image.new("L", (1, 1), color="white")
     temp_draw = ImageDraw.Draw(temp_img)
@@ -34,7 +34,7 @@ def create_text_image(text, max_width, font_family, font_size):
     
     text_img_buffer = Image.new("L", (text_width, text_height), color="white")
     tib_draw = ImageDraw.Draw(text_img_buffer)
-    tib_draw.text((0, 0), text, fill="black", font=font)
+    tib_draw.text((0, 0), text, fill="black", font=font, align=align_text)
     
     if text_width > max_width:
         text_img_buffer = text_img_buffer.resize((max_width, int(max_width / (text_width/text_height))), Image.Resampling.BICUBIC)

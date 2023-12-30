@@ -61,7 +61,7 @@ except ImportError:
 
 if platform.system() == 'macOS':
     try:
-        import CoreBluetooth    # pylint: disable=import-error,unused-import
+        import CoreBluetooth    # pylint: disable=import-error,unused-import # type: ignore
     except ImportError:
         fatal(
             i18n('please-install-pyobjc-via-pip'),
@@ -694,7 +694,7 @@ def _main():
         sys.exit(0)
 
     args = parser.parse_args()
-
+    print("ARGS --->>", args)
     printer = PrinterDriver()
 
     scan_param = args.scan.split(',')
