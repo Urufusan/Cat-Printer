@@ -19,7 +19,7 @@ def has_transparency(img):
     return False
 
 
-def create_text_image(text, max_width, font_family, font_size, align_text):
+def create_text_image(text : str, max_width : int, font_family : str, font_size : int, align_text : str = "left"):
     # Create a blank image with a white background
     temp_img = Image.new("L", (1, 1), color="white")
     temp_draw = ImageDraw.Draw(temp_img)
@@ -60,7 +60,7 @@ def create_text_image(text, max_width, font_family, font_size, align_text):
 
     return img_byte_array
 
-def create_image(image_buf : BufferedIOBase, max_width):
+def create_image(image_buf : BufferedIOBase, max_width : int):
     img_byte_array = BytesIO()
     temp_image = Image.open(image_buf)
     if has_transparency(temp_image):

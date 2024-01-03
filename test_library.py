@@ -41,12 +41,12 @@ def create_prt_object(scantime : float = 2.0, energy : float = 0.1, quality : in
     printer.scan_time = scantime
     printer.energy = energy
     printer.speed = (4 * (quality + 5)) * speedmul
-    if 'flip' in image_param:
+    if 'flip_both' in image_param:
         printer.flip_h = True
         printer.flip_v = True
-    elif 'fliph' in image_param:
+    elif 'flip_h' in image_param:
         printer.flip_h = True
-    elif 'flipv' in image_param:
+    elif 'flip_v' in image_param:
         printer.flip_v = True
     print(ptr_list := printer.scan("EE:10:16:21:45:11"))
     printer.connect(ptr_list[0].name, ptr_list[0].address)
