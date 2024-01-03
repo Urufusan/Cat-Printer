@@ -6,6 +6,7 @@ import sys
 import subprocess
 import new_pbm_generator
 import os
+from io import BufferedIOBase
 
 def zenity_file_dialog(dialog_mode_type : int):
     try:
@@ -52,7 +53,7 @@ def create_prt_object(scantime : float = 2.0, energy : float = 0.1, quality : in
     printer.connect(ptr_list[0].name, ptr_list[0].address)
     return printer
 
-def print_image(printer : prtlib.PrinterDriver, arg_file, unload : bool = False):
+def print_image(printer : prtlib.PrinterDriver, arg_file : BufferedIOBase, unload : bool = False):
     file = arg_file
         
     mode = 'pbm'
@@ -64,7 +65,7 @@ def print_image(printer : prtlib.PrinterDriver, arg_file, unload : bool = False)
         mag_image.close()
         if unload: printer.unload()
 
-def print_text(printer : prtlib.PrinterDriver, text_str, font_family = "Ubuntu Mono", align_text = "left", font_size = 120, unload : bool = False):
+def print_text(printer : prtlib.PrinterDriver, text_str : str, font_family : str = "Ubuntu Mono", align_text : str = "left", font_size : int = 120, unload : bool = False):
     # if arg_file == '-':
     #     file = sys.stdin.buffer
     # else:

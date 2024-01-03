@@ -3,7 +3,7 @@ from PIL import Image, ImageDraw, ImageFont
 from io import BytesIO, BufferedIOBase
 import sfontmgr
 
-def has_transparency(img):
+def has_transparency(img : Image.Image):
     if img.info.get("transparency", None) is not None:
         return True
     if img.mode == "P":
