@@ -1,0 +1,13 @@
+{
+    "type": "command",
+    "label": "Send to Cat-Printer",
+    "command_line": "gnome-terminal -t \"Running printing job...\" -- python3 /home/user/Scripts/Cat-Printer/test_library.py nautilus-menu %F",
+    "cwd": "/home/user/Scripts/Cat-Printer/",
+    "min_items": 1,
+    "permissions": "read",
+    "mimetypes": [
+        "image/*"
+    ]
+}
+// add this to your AFN config json WITHOUT this comment!
+// also, change the location of the project folder!

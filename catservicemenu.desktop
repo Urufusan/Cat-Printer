@@ -1,0 +1,21 @@
+[Desktop Entry]
+
+# This is a KDE Dolphin service menu file (context menu option file)
+# it adds a context menu option called "Send to Cat Printer" which then sends selected image files to the printer for printing
+# The exec expects the project folder to be in the home dir, this can be changed (line 17).
+
+Actions=catPrint
+
+MimeType=image/*
+
+# ServiceTypes=KonqPopupMenu/Plugin
+
+Type=Service
+
+[Desktop Action catPrint]
+
+Exec=konsole --workdir ~/Cat-Printer -e python3 test_library.py nautilus-menu %F
+
+Icon=background
+
+Name=Send to Cat Printer
