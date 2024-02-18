@@ -41,7 +41,7 @@ def create_prt_object(scantime : float = 2.0, energy : float = 0.1, quality : in
     printer = prtlib.PrinterDriver()
     printer.scan_time = scantime
     printer.energy = energy
-    printer.speed = (4 * (quality + 5)) * speedmul
+    printer.speed = int((4 * (quality + 5)) * speedmul)
     if 'flip_both' in image_param:
         printer.flip_h = True
         printer.flip_v = True
@@ -49,8 +49,9 @@ def create_prt_object(scantime : float = 2.0, energy : float = 0.1, quality : in
         printer.flip_h = True
     elif 'flip_v' in image_param:
         printer.flip_v = True
-    print(ptr_list := printer.scan("EE:10:16:21:45:11"))
-    printer.connect(ptr_list[0].name, ptr_list[0].address)
+    # print(ptr_list := printer.scan("EE:10:16:21:45:11"))
+    # printer.connect(ptr_list[0].name, ptr_list[0].address)
+    printer.connect("MX06", "EE:10:16:21:45:11")
     return printer
 
 def print_image(printer : prtlib.PrinterDriver, arg_file : BufferedIOBase, unload : bool = False):
@@ -83,24 +84,31 @@ def print_text(printer : prtlib.PrinterDriver, text_str : str, font_family : str
 if __name__ == "__main__":
     # while not (z := int(input("Select program mode\n1. Text\n2.Image\n>> "))) < 3:
     #     print("Enter a valid choice.")
-    z = 1 if sys.argv[1].strip() != "nautilus-menu" else 3
+    formatopt = ""
+    if len(sys.argv) > 1:
+        z = 1 if (formatopt := sys.argv[1].strip().lower()) != "nautilus-menu" else 3
+    else:
+        z = 1
+        formatopt = "left"
+    # z = 2
     match z:
         case 1:
             # le_text = os.popen("neofetch --stdout | fold -w 40 -s").read()
             le_text = "Centered text test\nWith multiple\nlines\nand things" if sys.stdin.isatty() else sys.stdin.read()
             print(le_text)
-            prt = create_prt_object(speedmul=3)
-            print_text(prt, le_text, "Impact", align_text="center")
+            # if not formatopt: formatopt = sys.argv[1].strip().lower()
+            prt = create_prt_object()
+            print_text(prt, le_text, "Roboto", align_text="left" or (formatopt if formatopt in ["center", "left", "right"] else None))
         case 2:
             # fpath = zenity_file_dialog(2)
-            fpath = "~/Pictures/nikoaf5.png"
+            fpath = "/tmp/4bXgr7C70h0dBx5UJSsWXQ.png"
             print(fpath)
-            prt = create_prt_object(speedmul=3)
+            prt = create_prt_object(speedmul=5, energy=1, quality=4)
             print_image(prt, fpath)
         case 3:
             fpaths = sys.argv[2:]
             print(fpaths)
-            prt = create_prt_object()
+            prt = create_prt_object(energy=1, speedmul=0.5)
             for fpath in fpaths:
                 print_image(prt, fpath)
         case _:

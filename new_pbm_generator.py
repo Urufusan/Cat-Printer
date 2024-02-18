@@ -39,6 +39,7 @@ def create_text_image(text : str, max_width : int, font_family : str, font_size 
     if text_width > max_width:
         text_img_buffer = text_img_buffer.resize((max_width, int(max_width / (text_width/text_height))), Image.Resampling.BICUBIC)
     
+    temp_img.close()
     del temp_img
     del temp_draw
     
@@ -68,6 +69,8 @@ def create_image(image_buf : BufferedIOBase, max_width : int):
         bgimg.paste(temp_image, (0,0), temp_image)
         temp_image = bgimg
     temp_image.resize((max_width, int(max_width / (temp_image.width/temp_image.height))), Image.Resampling.LANCZOS).convert('1', dither=Image.Dither.FLOYDSTEINBERG).save(img_byte_array, format="PPM")    
+    temp_image.close()
+    del temp_image
     img_byte_array.seek(0)
 
     return img_byte_array
