@@ -51,7 +51,7 @@ def create_prt_object(scantime : float = 2.0, energy : float = 0.1, quality : in
         printer.flip_v = True
     # print(ptr_list := printer.scan("EE:10:16:21:45:11"))
     # printer.connect(ptr_list[0].name, ptr_list[0].address)
-    printer.connect("MX06", "EE:10:16:21:45:11")
+    printer.connect("MXW01", "48:0F:57:1D:29:CE")
     return printer
 
 def print_image(printer : prtlib.PrinterDriver, arg_file : BufferedIOBase, unload : bool = False):

@@ -161,3 +161,89 @@ class Commander(metaclass=ABCMeta):
     def send(self, data):
         'Send data to device, or whatever'
         ...
+
+# MXW01 Specific Commands and Handling
+class CatPrinterCommandMxw01:
+    COMMANDS = {
+        'getVersion': 0xB1,
+        'status': 0xA1,
+        'print': 0xA9,
+        'printComplete': 0xAA
+    }
+
+    def __init__(self, command, data=bytearray()):
+        self.command = command
+        self.data = data
+
+    def pack(self):
+        packet = bytearray([0x22, 0x21, self.COMMANDS[self.command], 0x00])
+        packet.extend(len(self.data).to_bytes(2, byteorder='little'))
+        packet.extend(self.data)
+        packet.append(crc8(self.data))
+        packet.append(0xFF)
+        return packet
+
+    @staticmethod
+    def unpack(data):
+        reader = ByteArray(data)
+        if reader.read_uint8() != 0x22:
+            raise ValueError("Wrong first byte")
+        if reader.read_uint8() != 0x21:
+            raise ValueError("Wrong second byte")
+        command = reader.read_uint8()
+        if command not in CatPrinterCommandMxw01.COMMANDS.values():
+            raise ValueError("Unsupported command.")
+        reader.read_uint8()  # Skip 4th byte
+        length = reader.read_uint16_le()
+        data = reader.read_bytes(length)
+        return command, data
+
+class ByteArray:
+    def __init__(self, data=bytearray()):
+        self.data = bytearray(data)
+        self.index = 0
+
+    def read_uint8(self):
+        result = self.data[self.index]
+        self.index += 1
+        return result
+
+    def read_uint16_le(self):
+        result = self.data[self.index] | (self.data[self.index + 1] << 8)
+        self.index += 2
+        return result
+
+    def read_bytes(self, length):
+        result = self.data[self.index:self.index + length]
+        self.index += length
+        return result
+
+    def write_uint8(self, value):
+        self.data.append(value)
+        return self
+
+    def write_uint16_le(self, value):
+        self.data.extend(value.to_bytes(2, byteorder='little'))
+        return self
+
+    def write_bytes(self, value):
+        self.data.extend(value)
+        return self
+
+def cat_printer_pack_print_image_commands_mxw01(image):
+    data = bytearray()
+    for image_row in image:
+        data.extend(cat_printer_encode_image_row(image_row))
+    while len(data) < 90 * 384 // 8:
+        data.extend(bytearray([0] * 50))  # Padding to ensure minimum length
+    return data
+
+def cat_printer_encode_image_row(image_row):
+    data = bytearray(len(image_row) // 8)
+    for byte_index in range(len(data)):
+        byte = 0
+        for bit_index in range(8):
+            if image_row[8 * byte_index + bit_index]:
+                byte |= (1 << bit_index)
+        data[byte_index] = byte
+    return data
